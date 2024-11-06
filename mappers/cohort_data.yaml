@@ -1,0 +1,10 @@
+subjects:
+  - sex: "FEMALE"
+    age: 35
+    disease: "hypertension"
+  - sex: "MALE"
+    age: 40
+    disease: "diabetes"
+  - sex: "FEMALE"
+    age: 29
+    disease: "none"
