@@ -1,0 +1,168 @@
+id: https://w3id.org/linkml/b1mg
+name: basicinfo
+prefixes:
+  linkml: https://w3id.org/linkml/
+  basicinfo: https://w3id.org/linkml/b1mg
+imports:
+  - linkml:types
+default_range: string
+default_prefix: basicinfo
+
+classes:
+  Submitter:
+    attributes:
+      Identification:
+        required: true
+        description:
+          Name and qualification of the Submitter
+      Email:
+        required: true
+        description:
+          Email
+      Data_Publisher:
+        required: true
+        description:
+          Identifies the responsible for data collection, in compliance with DCAT-AP-EU specifications
+      Country:
+        required: true
+        description:
+          EU Contry in ISO 3166-1
+  Patient:
+    attributes:
+      Birth_Year:
+        required: true
+        description:
+          Patient's year of birth as indicated on their birth certificate, in Partial Date (YYYY-MM), ISO 8601 format
+      Sex_at_Birth:
+        required: true
+        description:
+          Sex as assigned at birth
+        enum:
+          - Male
+          - Female
+          - Other
+          - Unknown
+      Date_of_Last_Follow_Up:
+        required: true
+        description:
+          Partial Date (YYYY-MM), ISO 8601 format
+  Sequence:
+    attributes:
+      Protocol:
+        required: true
+        description:
+          Identification of the genomic preparation protocol (coded values)
+        enum:
+          - single gene
+          - specific region
+          - multi gene panel
+          - whole exome
+          - whole genome 
+      Sequencing_Platform:
+        required: true
+        description:
+          Identification of the sequencing platform, based on Gene Expression Omnibus (GEO) platforms (GEO database platform identifier, in the form of GPLxxx )    
+      File_Format:
+        required: true
+        description:
+          Identification of the genomic file format of the sequence file
+        enum:
+          - .fastq.gz
+          - .bam
+          - .bai
+          - .vcf
+      Alignment:
+        required: true
+        description:
+          Identification of the software used for alignment (links to github or other public repositories with version tracking)
+      Alignment_Genome:
+        required: true
+        description:
+          Identification of the genome version (e.g. Hg38, Hg19)
+      Variant_Calling:
+        required: true
+        description:
+          Identification of the software used for variant calling (links to github or other public repositories with version tracking)
+      Variant_Annotation:
+        required: true
+        description:
+          Identification of the software used for variant calling (links to github or other public repositories with version tracking)
+      Variant_Interpretation:
+        required: true
+        description:
+          Database and version used for variant annotation (links to github or other public repositories with version tracking)
+      Clinical_Variant_Interpretation:
+        required: true
+        description:
+          Database and version used for variant clinical interpretation (ClinVar, OncoKB, Other)
+  Sample:
+    attributes:
+      Anatomy:
+        required: true
+        description:
+          Anatomic site of the primary tumor sample according to the International Classification of Diseases for Oncology (ICDO-3)
+      Processing:
+        required: true
+        description:
+          Sample type, based on the technique used for extraction and preservation (multiple choices allowed)
+        enum:
+        - Fresh
+        - Frozen
+        - FFPE
+        - Biopsy
+        - Surgery
+        - Other
+      Healthy_Tumor_Matched:
+        required: true
+        description:
+          If both tumor and normal tissue are available, it confirms if they are matched
+        enum:
+          - Yes
+          - No
+      Healthy_Tumor_Matching_Sample:
+        required: true
+        description:
+          Indicates precisely the corresponding normal sample Identifier
+      Presence_of_Matching_Samples:
+        required: true
+        description:
+          Indicates the presence of additional samples, in the natural history of the disease
+        enum:
+          - Yes
+          - No
+      Matching_Samples:
+        required: true
+        description:
+          Indicates precisely the corresponding sample Identifier             
+  Disease:
+    attributes:
+      Topology:
+        required: true
+        description:
+          Describes the tissue of origin of the cancer (ICD-O-3 (Topology))
+      Morfology:
+        required: true
+        description:
+          Describes the tumor cell type and biological activity (ICD-O-3 (Morphology))
+      Definition:
+        required: true
+        description:
+          Used to specify the initial cancer diagnosis (neoplasm) and then follow the disease progression (primary cancer, loco-regional or metastatic relapse) with ICD-10 codes
+  Container:
+    tree_root: true
+    attributes:
+      submitters:
+        inlined_as_list: true
+        range: Submitter
+      patients:
+        inlined_as_list: true
+        range: Patient
+      sequences:
+        inlined_as_list: true
+        range: Sequence 
+      samples:
+        inlined_as_list: true
+        range: Sample
+      diseases:
+        inlined_as_list: true
+        range: Disease
