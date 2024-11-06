@@ -37,11 +37,7 @@ classes:
         required: true
         description:
           Sex as assigned at birth
-        enum:
-          - Male
-          - Female
-          - Other
-          - Unknown
+        range: PersonSex
       Date_of_Last_Follow_Up:
         required: true
         description:
@@ -52,12 +48,7 @@ classes:
         required: true
         description:
           Identification of the genomic preparation protocol (coded values)
-        enum:
-          - single gene
-          - specific region
-          - multi gene panel
-          - whole exome
-          - whole genome 
+        range: SequenceProtocol
       Sequencing_Platform:
         required: true
         description:
@@ -66,11 +57,7 @@ classes:
         required: true
         description:
           Identification of the genomic file format of the sequence file
-        enum:
-          - .fastq.gz
-          - .bam
-          - .bai
-          - .vcf
+        range: SequenceFileFormat
       Alignment:
         required: true
         description:
@@ -105,20 +92,12 @@ classes:
         required: true
         description:
           Sample type, based on the technique used for extraction and preservation (multiple choices allowed)
-        enum:
-        - Fresh
-        - Frozen
-        - FFPE
-        - Biopsy
-        - Surgery
-        - Other
+        range: SampleProcessing
       Healthy_Tumor_Matched:
         required: true
         description:
           If both tumor and normal tissue are available, it confirms if they are matched
-        enum:
-          - Yes
-          - No
+        range: BooleanYesNo
       Healthy_Tumor_Matching_Sample:
         required: true
         description:
@@ -127,9 +106,7 @@ classes:
         required: true
         description:
           Indicates the presence of additional samples, in the natural history of the disease
-        enum:
-          - Yes
-          - No
+        range: BooleanYesNo
       Matching_Samples:
         required: true
         description:
@@ -166,3 +143,36 @@ classes:
       diseases:
         inlined_as_list: true
         range: Disease
+
+enums:
+  PersonSex:
+    permissible_values:
+      Male:
+      Female:
+      Other:
+      Unknown:
+  SequenceProtocol:
+    permissible_values:
+      single gene:
+      specific region:
+      multi gene panel:
+      whole exome:
+      whole genome:
+  SequenceFileFormat:
+    permissible_values:
+      fastq.gz:
+      bam:
+      bai:
+      vcf:
+  SampleProcessing:
+    permissible_values:
+      Fresh:
+      Frozen:
+      FFPE:
+      Biopsy:
+      Surgery:
+      Other:
+  BooleanYesNo:
+    permissible_values:
+      Yes:
+      No:
