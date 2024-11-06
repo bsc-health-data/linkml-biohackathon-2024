@@ -1,0 +1,12 @@
+# docker-compose.yml
+version: '3'
+services:
+  react-app:
+    build:
+      context: . # Usa el Dockerfile en el directorio actual
+    ports:
+      - "5173:5173" # Mapea el puerto de desarrollo de la aplicación
+    volumes:
+      - .:/app # Monta el código fuente en el contenedor para Hot Reload
+      - /app/node_modules # Mantiene los node_modules dentro del contenedor
+    container_name: app-frontend

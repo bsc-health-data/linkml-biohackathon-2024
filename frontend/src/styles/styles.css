@@ -1,0 +1,106 @@
+.stepper-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.stepper-description {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.stepper-description-content  {
+  max-width: 80%;
+}
+
+.stepper-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stepper-row {
+  display: block;
+}
+
+.stepper-body-block {
+  display: block;
+}
+
+.stepper-inner-row {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.stepper-inner-row-label {
+  min-width: 200px;
+}
+
+.stepper-separator {
+  margin: 1rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.stepper-body-description-title span {
+  padding-right: 10px;
+}
+
+.flex {
+  display: flex;
+}
+
+.stepper-body-description-row  {
+  display: flex;
+}
+
+.stepper-body-description-title {
+  text-align: left;
+}
+
+.stepper-body-description-title-label {
+  font-weight: bold;
+  padding-right: 5px;
+}
+
+.flex .MuiStepLabel-labelContainer .MuiStepLabel-label {
+  display: flex;
+  align-items: center;
+}
+
+.uploadFile {
+  width: 30%;
+  background-color: white;
+  border: 1px solid grey;
+  color: grey;
+  font-size: 16px;
+  line-height: 23px;
+  overflow: hidden;
+  padding: 10px 10px 4px 10px;
+  position: relative;
+  resize: none;
+}
+
+.uploadFile:hover {
+  background-color: #7ED4AD;
+  cursor: pointer;
+  color: white;
+}
+
+.uploadFile  [type="file"] {
+  cursor: pointer !important;
+  display: block;
+  font-size: 999px;
+  filter: alpha(opacity=0);
+  min-height: 100%;
+  min-width: 100%;
+  opacity: 0;
+  position: absolute;
+  right: 0px;
+  text-align: right;
+  top: 0px;
+  z-index: 1;
+}
