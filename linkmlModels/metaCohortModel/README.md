@@ -14,15 +14,16 @@ pip install -r requirements.txt
 
 validate the example data files
 ```bash
-linkml-validate --schema ../linkmlModels/metaCohortModel/metaCohortModel.yaml examples/cohort_data.yaml
-linkml-validate --schema ../linkmlModels/metaCohortModel/metaCohortModel.yaml examples/cohort_data.csv --target-class Subject
+linkml-validate --schema metaCohortModel.yaml examples/cohort_data.yaml
+linkml-validate --schema metaCohortModel.yaml examples/cohort_data.csv --target-class Subject
 ```
 
 transform
 ```bash
+mkdir output
 linkml-map --verbose map-data \
   --transformer-specification examples/transform.yaml \
-  --schema ../linkmlModels/metaCohortModel/metaCohortModel.yaml \
+  --schema metaCohortModel.yaml \
   --output output/cohort_data.yaml \
-  cohort_data.yaml
+  examples/cohort_data.yaml
 ```

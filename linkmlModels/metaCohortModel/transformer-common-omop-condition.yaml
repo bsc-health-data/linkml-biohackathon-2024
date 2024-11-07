@@ -1,0 +1,19 @@
+title: "a linkml-map transformation spec from the common cohort model to omop"
+
+class_derivations:
+  PersonContainer:
+    populated_from: CohortData
+    slot_derivations:
+      conditions:
+        populated_from: subjects
+        target_definition: ConditionOccurrence
+
+  ConditionOccurrence:
+    populated_from: Subject
+    slot_derivations:
+      condition_occurrence_id:
+        expr: '{age}+{age}'
+      condition_source_value:
+        populated_from: disease
+      person_id:
+        populated_from: person_id

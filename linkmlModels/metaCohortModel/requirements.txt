@@ -1,2 +1,4 @@
 linkml
 linkml-map
+# newer pint versions cause a problem in transformation during import of pint
+pint==0.23

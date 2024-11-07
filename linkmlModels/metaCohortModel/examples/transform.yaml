@@ -13,8 +13,7 @@ class_derivations:
         populated_from: age
       disease:
         populated_from: disease
-      sex2:
-        populated_from: sex
-        transform: |
-          return value
-  
+      gender_concept_id:
+        range: integer
+        expr: ""
+

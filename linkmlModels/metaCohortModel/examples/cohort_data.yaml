@@ -2,9 +2,12 @@ subjects:
   - sex: "FEMALE"
     age: 35
     disease: "hypertension"
+    subject_id: 1
   - sex: "MALE"
     age: 40
+    subject_id: 2
     disease: "diabetes"
-  - sex: "FEMALE"
+  - sex: "OTHER"
+    subject_id: 3
     age: 29
     disease: "none"
