@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Slider from '@mui/material/Slider';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid2';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -67,7 +68,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 350,
     },
   },
 };
@@ -87,7 +88,6 @@ export default function SelectionChooser({ onFilterChange, filterData, filterApp
     if (filterData.params.minAge !== undefined && filterData.params.maxAge !== undefined) {
       setAge([filterData.params.minAge, filterData.params.maxAge]);
     }
-    console.log(filterData.params.sex)
     if (filterData.params.sex) {
       setSex(filterData.params.sex);
     }
@@ -105,7 +105,7 @@ export default function SelectionChooser({ onFilterChange, filterData, filterApp
   };
 
   const handleSexChange = (event: SelectChangeEvent) => {
-    console.log("updatedSex", updatedSex);
+    const updatedSex = [event.target.value];
     setSex(updatedSex);
     onFilterChange({ sex: updatedSex });
   };
@@ -135,7 +135,7 @@ export default function SelectionChooser({ onFilterChange, filterData, filterApp
                 return (
                   <Grid size={12} key="age">
                     <div className="stepper-inner-row w-100 p-b-50">
-                      <div className="stepper-inner-row-label">Age</div>
+                      <div className="stepper-inner-row-label">Age:</div>
                         <Slider
                           getAriaLabel={() => 'Ages'}
                           value={
@@ -150,6 +150,7 @@ export default function SelectionChooser({ onFilterChange, filterData, filterApp
                           marks={AgeMarks}
                         />
                     </div>
+                    <div className="stepper-separator"></div>
                   </Grid>
                 );
               }
@@ -157,11 +158,11 @@ export default function SelectionChooser({ onFilterChange, filterData, filterApp
                 return (
                   <Grid size={6} key="sex">
                     <div className="stepper-inner-row p-b-50">
-                      <div className="stepper-inner-row-label">Sex</div>
+                      <div className="stepper-inner-row-label">Sex:</div>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={filterData.params.sex?.[0]?.type || ''}                        
+                        value={filterApplied.params.sex || ''}                        
                         label="Sex"
                         onChange={handleSexChange}
                       >
@@ -171,31 +172,35 @@ export default function SelectionChooser({ onFilterChange, filterData, filterApp
                           </MenuItem>
                         ))}
                       </Select>
+                      <hr />
                     </div>
+                    
                   </Grid>
                 );
               }
               if (f.label === 'Disease' && filterData.params.disease && filterData.params.disease.length > 0) {
                 return (
                   <Grid size={6} key="disease">
-                    <div className="stepper-inner-row p-b-50">
-                      <div className="stepper-inner-row-label">Disease</div>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select-disease"
-                        multiple
-                        label="Disease"
-                        value={filterData.params.disease || []}                        
-                        onChange={handleDiseaseChange}
-                        input={<OutlinedInput label="Disease" />}
-                        MenuProps={MenuProps}
-                      >
-                        {filterData.params.disease.map((filter) => (
-                          <MenuItem key={filter} value={filter}>
-                            {filter}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                    <div className="stepper-inner-row">
+                      <div className="stepper-inner-row-label">Disease:</div>
+                      <Box sx={{ m: 1, width: 300 }}>                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select-disease"
+                          multiple
+                          label="Disease"
+                          value={filterApplied.params.disease || []}                        
+                          onChange={handleDiseaseChange}
+                          input={<OutlinedInput label="Disease" />}
+                          MenuProps={MenuProps}
+                          autoWidth
+                        >
+                          {filterData.params.disease.map((filter) => (
+                            <MenuItem key={filter} value={filter}>
+                              {filter}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Box>
                     </div>
                   </Grid>
                 );

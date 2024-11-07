@@ -15,7 +15,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import DownloadIcon from '@mui/icons-material/Download';
 
-const steps = ['Upload File', 'Choose By', 'Output File Format', 'Download File'];
+const steps = ['Upload File', 'Filters', 'Output File Format', 'Download File'];
 
 interface FilterParams {
   minAge?: number;
@@ -97,7 +97,6 @@ export default function HorizontalLinearStepper() {
   }
 
   const handleConverterChange = (converter: Converter) => {
-    console.log(converter);
     setConverterSelected(converter);
   }
 
@@ -106,7 +105,6 @@ export default function HorizontalLinearStepper() {
   }
 
   const handleFilterChange = (updatedFilterData) => {
-    console.log("filter change!!!", updatedFilterData)
     setFilterApplied((prevData) => ({
       ...prevData,
       params: { ...prevData.params, ...updatedFilterData }
@@ -124,8 +122,8 @@ export default function HorizontalLinearStepper() {
     fetch("http://127.0.0.1:5000/cohortRetrieval?model=" + inputFormat + "&path=" + inputPath + inputFile)
       .then(response => response.json())
       .then(data => {
-        const ageMin = data.age;
-        const ageMax = ageMin;
+        const ageMin = data.age[0];
+        const ageMax = data.age[1];
         const sex = data.sex;
         let sexObj = [];
         if(sex.MALE) {
@@ -155,13 +153,15 @@ export default function HorizontalLinearStepper() {
             disease: diseases
         }};
 
+        const defaultDisease =  diseases.length > 0 ? [diseases[0]] : [];
+
         // default filter values
         const filterApplied: FilterApplied = {
           params: {
-            minAge: ageMin,
-            maxAge: ageMax,
+            minAge: parseInt(ageMin),
+            maxAge: parseInt(ageMax),
             sex: sexObj[0].type,
-            disease: diseases
+            disease: defaultDisease
           }
         };
 

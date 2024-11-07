@@ -61,6 +61,17 @@ body {
 }
 .stepper-wrapper {
   background-color: white;
-  padding: 100px 50px;
+  padding: opx 20px 100px;
   box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+}
+
+.MuiStepper-horizontal {
+  background-color: #faf7ff;
+  padding: 50px;
+}
+.MuiTypography-body1 {
+  padding: 0 50px 70px 50px;
+}
+.MuiTypography-body1.MuiFormControlLabel-label {
+  padding: 10px;
 }
