@@ -1,0 +1,64 @@
+patients:
+  - id: 001  # Invalid: should be a string
+    gender: "alien"  # Invalid: should be one of the defined enums: "male", "female", "other", "unknown"
+    birthDate: "1985-02-20"
+  - id: "patient-002"
+    gender: "female"
+    birthDate: "1990-07-15"
+  - # Missing required `id`
+    gender: "other"
+    birthDate: "this is not a date"  # Invalid date format
+  - id: "patient-004"
+    gender: "male"
+    birthDate: "21/05/1990"  # Invalid date format (DD/MM/YYYY instead of ISO YYYY-MM-DD)
+  - id: "patient-005"
+    gender: "unknown"
+    birthDate: "1995-09-30"
+  - id: "patient-006"
+    gender: ""  # Empty gender field; expected valid enum value
+    birthDate: "1988-10-12"
+  - id: "patient-007"
+    birthDate: "1988-04-04"  # Missing required `gender`
+  - id: "patient-008"
+    gender: true  # Invalid type: should be a string, not a boolean
+    birthDate: "1981-03-03"
+
+conditions:
+  - id: "condition-001"
+    code: 
+      text: "Hypertension"
+    subject: "patient-001"
+    onsetDateTime: "2020-13-11"  # Invalid date format; not ISO datetime
+  - id: "condition-002"
+    code: 
+      text: "Diabetes"
+    subject: "patient-002"
+    onsetDateTime: "2018-03-22T10:30:00Z"
+  - id: "condition-003"
+    code: 
+      text: "Asthma"
+    subject: "patient-003"
+    onsetDateTime: "2015-06-01T09:15:00Z"
+  - id: "condition-004"
+    code: "Seasonal Allergies"  # Invalid format: should be a `CodeableConcept` with a `text` key
+    subject: "patient-004"
+    onsetDateTime: "2019-08-10T07:45:00Z"
+  - id: "condition-005"
+    code: "Migraines"  # Invalid format: should be a `CodeableConcept` with a `text` key
+    subject: "patient-005"
+    onsetDateTime: "2021-11-01T14:00:00Z"
+  - id: "condition-006"
+    code: 
+      text: ""  # Empty text in `CodeableConcept`
+    subject: "patient-006"
+    onsetDateTime: "2021-06-15T10:00:00Z"
+  - id: "condition-007"
+    code: 
+      text: "Hypertension"
+    # Missing required `subject`
+    onsetDateTime: "2022-01-01T00:00:00Z"
+  - id: "condition-008"
+    code: 
+      text: "Diabetes"
+    subject: "nonexistent-patient"  # Reference to a non-existing patient
+    onsetDateTime: "invalid-date-time"  # Incorrect format; expected ISO datetime

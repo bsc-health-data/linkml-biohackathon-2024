@@ -1,0 +1,99 @@
+name: omop_linkml_mvp
+id: http://example.org/omop_linkml_mvp
+imports:
+- linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  test_schema: http://example.org/omop_linkml_mvp/
+default_prefix: test_schema
+default_range: string
+
+classes:
+  Person:
+    slots:
+      - person_id
+      - year_of_birth
+      - gender_concept_id
+    slot_usage:
+      person_id:
+        identifier: true
+        required: true
+      
+  Condition_occurrence:
+    slots:
+      - condition_occurrence_id
+      - person_id
+      - condition_source_value
+      - condition_concept_id
+    slot_usage:
+      condition_occurrence_id:
+        identifier: true
+  
+  Concept:
+    slots:
+      - concept_id
+      - concept_name
+      - domain_id
+    slot_usage:
+      concept_id:
+        identifier: true
+
+  Container:
+    tree_root: true
+    attributes:
+      persons:
+        multivalued: true
+        inlined_as_list: true
+        range: Person
+      condition_occurences:
+        multivalued: true
+        inlined_as_list: true
+        range: Condition_occurrence
+      concepts:
+        multivalued: true
+        inlined_as_list: true
+        range: Concept
+
+
+# data fields get their own section
+# descriptions from OMOP CDM v5.4 "User Field" spec
+slots:
+  person_id:
+    description: It is assumed that every person with a different unique identifier is in fact a different person and should be treated independently.
+    range: integer
+  year_of_birth:
+    range: integer
+  gender_concept_id:
+    description: This field is meant to capture the biological sex at birth of the Person. This field should not be used to study gender identity issues.
+    range: Concept
+  condition_occurrence_id:
+    description: The unique key given to a condition record for a person. Refer to the ETL for how duplicate conditions during the same visit were handled.
+    range: integer
+  condition_source_value:
+    range: string # varchar(50)
+    description: This field houses the verbatim value from the source data representing the condition that occurred. For example, this could be an ICD10 or Read code.
+  concept_id:
+    examples:
+    - value: '35223703'
+    identifier: true
+    range: integer
+  concept_name:
+    examples:
+    - value: deactivated. See X08
+    range: string
+    required: true
+  domain_id:
+    examples:
+    - value: Condition
+    range: string
+  condition_concept_id:
+    range: Concept
+# # optional: schema type extensions
+# types:
+#   AgeType:
+#    ...
+
+# # enumerations
+# enums:
+#   GenderType:
+#    ...

@@ -1,0 +1,83 @@
+classes:
+  Concept:
+    slots:
+    - concept_id
+    - concept_name
+    - domain_id
+    - vocabulary_id
+    - concept_class_id
+    - standard_concept
+    - concept_code
+    - valid_start_date
+    - valid_end_date
+    - invalid_reason
+    unique_keys:
+      concept_code_key:
+        unique_key_name: concept_code_key
+        unique_key_slots:
+        - concept_code
+default_prefix: Concept
+description: Concept
+enums:
+  invalid_reason_enum:
+    permissible_values:
+      D:
+        description: D
+      U:
+        description: U
+  standard_concept_enum:
+    permissible_values:
+      S:
+        description: S
+      C:
+        description: C
+id: https://w3id.org/Concept
+imports:
+- linkml:types
+name: Concept
+prefixes:
+  Concept: https://w3id.org/Concept
+  linkml: https://w3id.org/linkml/
+slots:
+  concept_class_id:
+    examples:
+    - value: 3-char billing code
+    range: string
+  concept_code:
+    examples:
+    - value: X09
+    range: string
+  concept_id:
+    examples:
+    - value: '35223703'
+    identifier: true
+    range: integer
+  concept_name:
+    examples:
+    - value: deactivated. See X08
+    range: string
+    required: true
+  domain_id:
+    examples:
+    - value: Condition
+    range: string
+  invalid_reason:
+    examples:
+    - value: D
+    range: invalid_reason_enum
+  standard_concept:
+    examples:
+    - value: S
+    range: standard_concept_enum
+  valid_end_date:
+    examples:
+    - value: '2009-12-31'
+    range: datetime
+  valid_start_date:
+    examples:
+    - value: '2007-01-01'
+    range: datetime
+  vocabulary_id:
+    examples:
+    - value: ICD10CM
+    range: string

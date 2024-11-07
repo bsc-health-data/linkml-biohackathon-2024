@@ -1,0 +1,44 @@
+id: cohort-model
+name: CohortModel
+description: A model representing a cohort of subjects with specific attributes.
+
+imports:
+- linkml:types
+
+prefixes:
+  cohort: http://example.org/cohort/
+  xsd: http://www.w3.org/2001/XMLSchema#
+  linkml: https://w3id.org/linkml/
+classes:
+  DataDictionary:
+    description: A dictionary of data attributes for a cohort.
+    slots:
+      - age
+      - sex
+      - disease
+
+enums:
+  gender_enum:
+    permissible_values:
+      Male:
+        description: Male
+      Female:
+        description: Female
+      Other:
+        description: Other
+slots:
+  name:
+    range: string
+    description: name of the cohort
+  data_dictionary:
+    range: DataDictionary
+    description: A collection of key attributes collected for the subjects in the cohort
+  age:
+    range: integer
+    description: Age of the subjects in the cohort.
+  sex:
+    range: gender_enum
+    description: Sex of the subjects in the cohort.
+  disease:
+    range: string
+    description: Disease associated with the subjects in the cohort.

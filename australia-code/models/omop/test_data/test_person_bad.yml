@@ -1,0 +1,10 @@
+persons:
+  -
+    year_of_birth: "nineteen60"
+    gender_concept_id: 123
+  - person_id: 5678
+    year_of_birth: 1985
+    gender_concept_id: true
+  - person_id: 9101
+    year_of_birth: 1975
+    gender_concept_id: 13.110
