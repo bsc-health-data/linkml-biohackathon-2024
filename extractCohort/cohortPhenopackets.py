@@ -1,42 +1,46 @@
-import sys
 import yaml
+import json
 
 # cohortVariables = ['diseases','subject']
 
-def retrieveAgeSex(yamlData):
-    ageList =[]
-    sexDict = {}
-    if 'subject' in yamlData:
-        if 'sex' in yamlData['subject']:
-            if yamlData['subject']['sex'] in sexDict:
-                sexDict[yamlData['subject']['sex']] += 1
+def retrieveAgeSex(patient, ageList, sexDict):
+    if 'subject' in patient:
+        if 'sex' in patient['subject']:
+            if patient['subject']['sex'] in sexDict:
+                sexDict[patient['subject']['sex']] += 1
             else:
-                sexDict[yamlData['subject']['sex']] = 1
-        if 'timeAtLastEncounter' in yamlData['subject']:
-            if 'age' in yamlData['subject']['timeAtLastEncounter']:
-                ageISO = yamlData['subject']['timeAtLastEncounter']['age']['iso8601duration']
+                sexDict[patient['subject']['sex']] = 1
+        if 'timeAtLastEncounter' in patient['subject']:
+            if 'age' in patient['subject']['timeAtLastEncounter']:
+                ageISO = patient['subject']['timeAtLastEncounter']['age']['iso8601duration']
                 ageISO = ageISO.replace('P','')
                 ageISO = ageISO.replace('Y','')
                 ageList.append(ageISO)
-    return {'age':int(ageISO), 'sex':sexDict}
+    return ageList, sexDict
 
-def retrieveDiseases(yamlData):
-    diseasesDict = {}
-    if 'diseases' in yamlData:
-        for diseasesTerms in yamlData['diseases']:
+def retrieveDiseases(patient, diseasesDict):
+    if 'diseases' in patient:
+        for diseasesTerms in patient['diseases']:
             diseasesDict[diseasesTerms['term']['id']] = diseasesTerms['term']['label']
-    return {'diseases':diseasesDict}
+    return diseasesDict
 
-def retrieveCohortdata(yamlData):
-    ageSexCohort = retrieveAgeSex(yamlData)
-    diseasesCohort = retrieveDiseases(yamlData)
-    return {**ageSexCohort, **diseasesCohort}
+def retrieveCohortdata(rawData):
+    ageList =[]
+    sexDict = {}    
+    diseasesDict = {}
+    for patient in rawData:
+        ageList, sexDict = retrieveAgeSex(patient, ageList, sexDict)
+        diseasesDict = retrieveDiseases(patient, diseasesDict)
+    return {'age':ageList, 'sex':sexDict, 'diseases':diseasesDict}
 
 # Function to return cohort phenopackets data
 def phenopacketsReturnData(filepath):
-    with open(filepath, 'r') as yamlFile:
-        yamlData = yaml.safe_load(yamlFile)
-        cohortdata = retrieveCohortdata(yamlData)
+    with open(filepath, 'r') as rawFile:
+        if filepath.endswith('.yaml') or filepath.endswith('.yml'):
+            jsonData = yaml.safe_load(rawFile)
+        else:   #json
+            jsonData = json.load(rawFile)
+        cohortdata = retrieveCohortdata(jsonData)    
     return cohortdata
 
 
