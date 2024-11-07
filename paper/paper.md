@@ -61,6 +61,12 @@ Using **OntoBridge** ([OntoBridge GitHub](https://github.com/InformaticaClinica/
 
 A minimal schema for OMOP was created using **LinkML**. The following tutorial was used as a guide: [LinkML Tutorial](https://linkml.io/linkml/intro/tutorial01.html).
 
+The following diagram models the OMOP data structure, with `Person` and `Condition_occurrence` classes to capture patient age, gender and disease condition. The `Container` class organises multiple `Person` instances.
+
+![](./images/omop_mvp_er_diagram.svg)
+
+**Minimal OMOP data model**
+
 The LinkML tree structure provided guidance on linking LinkML classes, following the standard outlined here: [OHDSI Data Standardization](https://www.ohdsi.org/data-standardization/).
 
 ### Mapping Attributes for Age, Sex, and Disease
@@ -68,6 +74,21 @@ The LinkML tree structure provided guidance on linking LinkML classes, following
 To map attributes such as **Age**, **Sex**, and **Disease**, the **OMOP v5.4 data model** was used to identify the appropriate attributes and classes to incorporate into the LinkML schema. For details on OMOP v5.4, see the documentation here: [OMOP v5.4 Data Model](https://ohdsi.github.io/CommonDataModel/cdm54.html#person).
 
 The minimal LinkML schema can be found at the following path: `[INSERT RELATIVE PATH]`.
+
+**Full OMOP data model**
+
+We generated a full LinkML schema from OMOP v5.4. `[INSERT RELATIVE PATH]`
+
+The full model was not used for the MVP app. 
+
+How: Create a db and add tables with the OMOP DDL, then use `schemauto import-sql` to generate the LinkML. To lint, the following block needed to be added to the top of the file:
+
+```
+prefixes:
+  linkml: https://w3id.org/linkml/
+imports:
+  - linkml:types
+```
 
 ### Schema Validation
 
@@ -98,13 +119,17 @@ To identify the relevant FHIR resources containing **Age**, **Sex**, and **Disea
 - **Age** and **Sex** attributes were found in the **Patient** resource.
 - **Disease** information was found in the **Observation** resource.
 
+![](./images/fhir_mvp_er_diagram.svg)
+
+The above diagram is the minimal FHIR schema. Instances of the `Patient` and `Condition` classes are organised through an overarching `Container` class. The `Patient` and `Condition` classes capture fields for age, gender, and disease. The `Condition` class references another entity, `CodeableConcept` which holds coding information about each condition.
+
 Using this information, a minimal LinkML schema was created with **Patient** and **Observation** defined as classes.
 
 The FHIR LinkML schema can be accessed here: `[insert repo link]`.
 
 ### Schema Validation
 
-The FHIR LinkML schema was then tested using YAML files with both valid test data and test data containing intentional errors. This testing ensured that the schema correctly validated data and identified errors.
+The FHIR LinkML schema was then tested using YAML and JSON files with both valid test data and test data containing intentional errors. The FHIR LinkML test data can be accessed here: `[insert repo link]`. This testing ensured that the schema correctly validated data and identified errors.
 
 This validation process helps maintain data integrity within the FHIR model and supports reliable interoperability across biomedical data standards.
 
@@ -116,11 +141,31 @@ This validation process helps maintain data integrity within the FHIR model and 
 
 # Mapping of models
 
+## OMOP and FHIR
+
+The `australia-code/schema_builders/transformer.py` file contains functions to transform data between the Cohort meta-model to OMOP and FHIR. Additionally, it contains a function to transform FHIR to the cohort meta-model. 
+
+All transformations use the `linkml-map` library to do the transformations. Mappings from cohort to the standard models required multiple intermediary transformations as the `linkml-map` is limited when it comes to transforming from 1 schema to multiple schemas. For
+example, in the cohort schema, disease and age are in the same schema, whereas in FHIR they are stored in `Condition` and `Patient` respectively.
+
+The transformation from FHIR to the cohort model uses a single transformation session, and utilises `linkml-map`'s dot notation expressions to access nested data.
+
 # Extracting cohort data
 
 # Webpage
 
-A web portal was developed using **StreamLit**
+A web portal was developed using **StreamLit**.
+
+```sh
+$ streamlit run app.py
+
+# To run without automatically opening the browser
+$ streamlit run app.py --server.headless true
+```
+
+
+
+This portal allows users to upload a `TSV` file which confirms to the cohort meta-model, select a standard format they would like to transform the data to, and download the result in either YAML or JSON format.
 
 # Discussion
 
