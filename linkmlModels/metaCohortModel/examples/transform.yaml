@@ -1,0 +1,20 @@
+
+class_derivations:
+  TargetList:
+    populated_from: CohortData
+    slot_derivations:
+      records:
+        populated_from: subjects
+
+  TargetRecord:
+    populated_from: Subject
+    slot_derivations:
+      age:
+        populated_from: age
+      disease:
+        populated_from: disease
+      sex2:
+        populated_from: sex
+        transform: |
+          return value
+  
