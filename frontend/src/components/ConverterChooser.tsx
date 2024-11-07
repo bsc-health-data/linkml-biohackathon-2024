@@ -13,31 +13,32 @@ interface Converter {
 interface ConverterChooserProps {
   onConverterChange: (converter: Converter) => void;
   converter: Converter;
+  title: string;
+  subtitle: string;
 }
 
-export default function ConverterChooser({ onConverterChange }: ConverterChooserProps) {
-  const [converterSelected, setConverterSelected] = useState<Converter | null>({ type: 'BBMRI CRC cohort' });
+export default function ConverterChooser({ onConverterChange, title, subtitle }: ConverterChooserProps) {
+  const [converter, setConverter] = useState<Converter | null>({ type: 'BBMRI CRC cohort' });
 
-  const handleConverterChange = () => {
-    setConverterSelected(converterSelected);
-    if (converterSelected) {
-      onConverterChange(converterSelected);
-    }
+  const handleConverterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newConverter = { type: event.target.value };
+    setConverter(newConverter);
+    onConverterChange(newConverter);
   };
 
   return (
     <div className="converter-chooser">
       <div className="stepper-title ">
-        Choose a converter
+        {title}
       </div>
       <div className="stepper-description">
-        Choose the converter you want to use
+        {subtitle}
       </div>
       <div className="stepper-body">
       <FormControl>
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"
-          defaultValue={converterSelected?.type }
+          defaultValue={converter?.type }
           onChange={handleConverterChange}
           name="radio-buttons-group"
         >

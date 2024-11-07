@@ -2,6 +2,12 @@
   font-size: 1.5rem;
   font-weight: 500;
   margin-bottom: 1rem;
+  padding-bottom: 40px;
+  padding-top: 60px;
+  color: #336273;
+}
+.stepper-title-content {
+  border-bottom: 1px solid #336273;
 }
 
 .stepper-description {
@@ -22,6 +28,25 @@
   align-items: center;
 }
 
+.stepper-body-left {
+  justify-content: left;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.p-b-50 {
+  padding-bottom: 50px;
+}
+
+.download-chooser-item {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  gap: 10px;
+}
+
 .stepper-row {
   display: block;
 }
@@ -30,9 +55,14 @@
   display: block;
 }
 
+.stepper-inner-row div {
+  max-width: 1000px;
+  justify-content: left;
+}
+
 .stepper-inner-row {
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
 }
 
@@ -103,4 +133,13 @@
   text-align: right;
   top: 0px;
   z-index: 1;
+}
+.download-chooser-item-title {
+  font-weight: bold;
+}
+
+hr {
+  min-height: 100%;
+  max-height: 100vh;
+  margin: 0;
 }

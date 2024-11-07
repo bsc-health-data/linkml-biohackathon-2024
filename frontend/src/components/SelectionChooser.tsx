@@ -1,18 +1,26 @@
 
-import { useState } from 'react';
-import Box from '@mui/material/Box';
+import { useState, useEffect } from 'react';
 import Slider from '@mui/material/Slider';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid2';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../styles/styles.css';
+import useFilter from './hooks/useFilter'; // Import the custom hook
 
 interface FilterParams {
-  minVAlue?: number;
-  maxValue?: number;
+  minAge?: number;
+  maxAge?: number;
+  sex?: object;
+  disease?: string[];
+}
+
+interface FilterAppliedParams {
+  minAge?: number;
+  maxAge?: number;
   sex?: string;
-  disease?: string;
+  disease?: string[];
 }
 
 interface Filter {
@@ -20,8 +28,14 @@ interface Filter {
   params: FilterParams
 }
 
+interface FilterApplied {
+  params: FilterAppliedParams
+}
+
 interface SelectionChooserProps {
-  onFilterChange: (filter: Filter) => void;
+  onFilterChange: (filterData: Partial<FilterParams>) => void;
+  loadingInput: boolean;
+  filterData: FilterParams
 }
 
 const AgeMarks = [
@@ -47,44 +61,59 @@ const AgeMarks = [
   },
 ];
 
-export default function SelectionChooser({ onFilterChange }: SelectionChooserProps) {
-  const [filter, setFilter] = useState<Filter | null>(null);
-  const [sex, setSex] = useState('');
-  const [age, setAge] = useState([20, 40]);
-  const [disease, setDisease] = useState('');
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+export default function SelectionChooser({ onFilterChange, filterData, filterApplied, loadingInput }: SelectionChooserProps) {
+  const [age, setAge] = useState<number[]>(filterData.params.minAge && filterData.params.maxAge ? [filterData.params.minAge, filterData.params.maxAge] : [20, 40]);
+  const [sex, setSex] = useState<string[]>(filterData.params.sex || []);
+  const [disease, setDisease] = useState<string[]>(filterData.params.disease || []);
+
   const filters = [
     { index: 0, label: 'Age', minValue: 0, maxValue: 100 },
-    { index: 1, label: 'Sex', sex: ''},
-    { index: 2, label: 'Disease', disease: ''},
-  ]
+    { index: 1, label: 'Sex', sex: []},
+    { index: 2, label: 'Disease', disease: []},
+  ];
 
-  const handleFilterChange = () => {
-    console.log("we are moving to next step")
-    const filter: Filter = {
-      type: 'checkbox',
-      params: {
-        minVAlue: age[0],
-        maxValue: age[1],
-        sex: sex,
-        disease: disease
-      }
+  useEffect(() => {
+    if (filterData.params.minAge !== undefined && filterData.params.maxAge !== undefined) {
+      setAge([filterData.params.minAge, filterData.params.maxAge]);
     }
-    onFilterChange(filter);
+    console.log(filterData.params.sex)
+    if (filterData.params.sex) {
+      setSex(filterData.params.sex);
+    }
+    if (filterData.params.disease) {
+      setDisease(filterData.params.disease);
+    }
+  },  [JSON.stringify(filterData)]);
+
+
+  // Handlers for sex change
+  const handleAgeChange = (event: Event, value: number | number[]) => {
+    const updatedAge = value as number[];
+    setAge(updatedAge);
+    onFilterChange({ minAge: updatedAge[0], maxAge: updatedAge[1] });
   };
 
-  function handleAgeChange(event: Event, value: number | number[]) {
-    console.log("age has change: ", value)
-    setAge(value as number[]);
-    handleFilterChange();
-  }
-
-  function valuetext(value: number) {
-    return `${value} years`;
-  }
-
-  function handleSexChange(event: SelectChangeEvent) {
-    setSex(event.target.value as string);
-    handleFilterChange();
+  const handleSexChange = (event: SelectChangeEvent) => {
+    console.log("updatedSex", updatedSex);
+    setSex(updatedSex);
+    onFilterChange({ sex: updatedSex });
+  };
+  
+  function handleDiseaseChange(event: SelectChangeEvent) {
+    const updatedDisease = [event.target.value];
+    setDisease(updatedDisease);
+    onFilterChange({ disease: updatedDisease });
   }
 
   return(
@@ -95,51 +124,88 @@ export default function SelectionChooser({ onFilterChange }: SelectionChooserPro
       <div className="stepper-description">
         Choose the file you want to convert
       </div>
-      <div className="stepper-body-block">
-        {filters.map((f) => (
-          <div className="stepper-row" key={f.index}>
-            {f.label === 'Age' ? (
-              <div className="stepper-inner-row">
-                <div className="stepper-inner-row-label">Age</div>
-                <Slider
-                  getAriaLabel={() => 'Sex range'}
-                  defaultValue={20}
-                  getAriaValueText={valuetext}
-                  step={10}
-                  value={age}
-                  valueLabelDisplay="auto"
-                  onChange={handleAgeChange}
-                  marks={AgeMarks}
-                />
-              </div>
-            ) : f.label === 'Sex' ? (
-              <div className="stepper-inner-row">
-                  <div className="stepper-inner-row-label">Sex</div>
-                  <Box sx={{ minWidth: 200 }}>
-                    <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-standard-label">Sex</InputLabel>
+      { loadingInput ? (
+        <div>Loading...</div>
+      ): (
+        <div className="stepper-body-block">
+          <div className="stepper-inner-row">
+            <Grid container spacing={2}>
+            { filters.map((f) => {
+              if (f.label === 'Age' && filterData.params.minAge && filterData.params.maxAge) {
+                return (
+                  <Grid size={12} key="age">
+                    <div className="stepper-inner-row w-100 p-b-50">
+                      <div className="stepper-inner-row-label">Age</div>
+                        <Slider
+                          getAriaLabel={() => 'Ages'}
+                          value={
+                            filterApplied.params.minAge !== undefined && filterApplied.params.maxAge !== undefined
+                              ? [filterApplied.params.minAge, filterApplied.params.maxAge]
+                              : [20, 40]
+                          }
+                          onChange={handleAgeChange}
+                          valueLabelDisplay="auto"
+                          step={10}
+                          valueLabelFormat={(value) => `${value} years`}
+                          marks={AgeMarks}
+                        />
+                    </div>
+                  </Grid>
+                );
+              }
+              if (f.label === 'Sex' && filterData.params.sex && filterData.params.sex.length > 0) {
+                return (
+                  <Grid size={6} key="sex">
+                    <div className="stepper-inner-row p-b-50">
+                      <div className="stepper-inner-row-label">Sex</div>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={sex}
+                        value={filterData.params.sex?.[0]?.type || ''}                        
                         label="Sex"
                         onChange={handleSexChange}
                       >
-                        <MenuItem value="male">Male</MenuItem>
-                        <MenuItem value="female">Female</MenuItem>
+                        {filterData.params.sex.map((filter) => (
+                          <MenuItem key={filter.type} value={filter.type}>
+                            {filter.type}
+                          </MenuItem>
+                        ))}
                       </Select>
-                    </FormControl>
-                  </Box>
-              </div>
-            ) : f.label === 'Disease' ? (
-              <div className="stepper-inner-row">
-                <div className="stepper-inner-row-label">Disease</div>
-
-              </div>
-            ) : null}
+                    </div>
+                  </Grid>
+                );
+              }
+              if (f.label === 'Disease' && filterData.params.disease && filterData.params.disease.length > 0) {
+                return (
+                  <Grid size={6} key="disease">
+                    <div className="stepper-inner-row p-b-50">
+                      <div className="stepper-inner-row-label">Disease</div>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select-disease"
+                        multiple
+                        label="Disease"
+                        value={filterData.params.disease || []}                        
+                        onChange={handleDiseaseChange}
+                        input={<OutlinedInput label="Disease" />}
+                        MenuProps={MenuProps}
+                      >
+                        {filterData.params.disease.map((filter) => (
+                          <MenuItem key={filter} value={filter}>
+                            {filter}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
+                  </Grid>
+                );
+              }
+            })
+            }
+            </Grid>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
