@@ -12,18 +12,18 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-validate the example data files
+## validate the example data files
 ```bash
 linkml-validate --schema metaCohortModel.yaml examples/cohort_data.yaml
 linkml-validate --schema metaCohortModel.yaml examples/cohort_data.csv --target-class Subject
 ```
 
-transform
+## transform
+run the make file and see the output files in `output/`
 ```bash
-mkdir output
-linkml-map --verbose map-data \
-  --transformer-specification examples/transform.yaml \
-  --schema metaCohortModel.yaml \
-  --output output/cohort_data.yaml \
-  examples/cohort_data.yaml
+make all
 ```
+
+## Notes
+
+- csv transform does not work
