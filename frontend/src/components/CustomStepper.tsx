@@ -15,17 +15,28 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import DownloadIcon from '@mui/icons-material/Download';
 
-const steps = ['Upload File', 'Choose By', 'Convert Type', 'Download File'];
+const steps = ['Upload File', 'Choose By', 'Output File Format', 'Download File'];
 
 interface FilterParams {
   minAge?: number;
   maxAge?: number;
+  sex?: object;
+  disease?: object;
+}
+
+interface FilterAppliedParams {
+  minAge?: number;
+  maxAge?: number;
   sex?: string;
-  disease?: string;
+  disease?: string[];
 }
 
 interface Filter {
   params: FilterParams
+}
+
+interface FilterApplied {
+  params: FilterAppliedParams
 }
 
 interface Converter {
@@ -37,14 +48,25 @@ export default function HorizontalLinearStepper() {
   const [activeNext, setActiveNext] = useState(false);
   const [skipped, setSkipped] = useState(new Set<number>());
   const [file, setFile] = useState<File | null>(null);
+  const [loadingInput, setLoadingInput] = useState(false);
+  const [inputData, setInputData] = useState<any>(null);
+  const [converterSelected, setConverterSelected] = useState<Converter | null>({ type: 'BBMRI CRC cohort' });
+  const [converterOutput, setConverterOutput] = useState<Converter | null>({ type: 'BBMRI CRC cohort' });
   const [filterSelected, setFilterSelected] = useState<Filter | null>({
     params: {
       minAge: 20,
       maxAge: 40,
-      sex: '',
-      disease: ''
+      sex:{},
+      disease: {}
   }});
-  const [converterSelected, setConverterSelected] = useState<Converter | null>({ type: 'BBMRI CRC cohort' });
+  const [filterApplied, setFilterApplied] = useState<FilterApplied | null>({
+    params: {
+      minAge: 0,
+      maxAge: 0,
+      sex: "",
+      disease: []
+    }
+  });
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -57,7 +79,7 @@ export default function HorizontalLinearStepper() {
       newSkipped.delete(activeStep);
     }
 
-    if (activeStep === 0 || activeStep === 1 || activeStep === 2) {
+    if (activeStep === 0 || activeStep === 1) {
       setActiveNext(true);
     }
 
@@ -67,119 +89,213 @@ export default function HorizontalLinearStepper() {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-
-    if (activeStep === 1 || activeStep === 2) {
-      setActiveNext(false);
-    } else {
-      setActiveNext(true);
-    }
   };
 
-  const handleFileChange = (file: File) => {
-    setFile(file);
+  const handleFileChange = (newFile: File | null) => {
+    setFile(newFile);
     setActiveNext(true);
   }
 
-  const handleFilterChange = (filter: Filter) => {
-    setFilterSelected(filterSelected);
-  }
-
   const handleConverterChange = (converter: Converter) => {
+    console.log(converter);
     setConverterSelected(converter);
   }
 
-  const handleReset = () => {
-    setActiveStep(0);
+  const handleConverterOutputChange = (converter: Converter) => {
+    setConverterOutput(converter);
+  }
+
+  const handleFilterChange = (updatedFilterData) => {
+    console.log("filter change!!!", updatedFilterData)
+    setFilterApplied((prevData) => ({
+      ...prevData,
+      params: { ...prevData.params, ...updatedFilterData }
+    }));
   };
 
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const stepProps: { completed?: boolean } = {};
-          const labelProps: {
-            optional?: React.ReactNode;
-          } = {};
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
+  const handleLoadingInput = () => {
+    setLoadingInput(true);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+    const inputFile = file?.name;
+    const inputFormat = converterSelected?.type;
+    const inputPath = "C:/biohack/linkml-biohackathon-2024/extractCohort/data/";
+
+    fetch("http://127.0.0.1:5000/cohortRetrieval?model=" + inputFormat + "&path=" + inputPath + inputFile)
+      .then(response => response.json())
+      .then(data => {
+        const ageMin = data.age;
+        const ageMax = ageMin;
+        const sex = data.sex;
+        let sexObj = [];
+        if(sex.MALE) {
+          const temp = {
+            type: 'Male'
           }
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps} className="flex">
-                { index === 0 &&
-                <AttachFileIcon/>
-                }
-                { index === 1 && 
-                  <FilterAltIcon />
-                }
-                { index === 2 && 
-                  <SyncAltIcon />
-                }
-                { index === 3 && 
-                  <DownloadIcon />
-                }
-                {label}
-              </StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      {activeStep === steps.length ? (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Reset</Button>
-          </Box>
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          <Typography component="div" sx={{ mt: 2, mb: 1 }}>
-            {activeStep === 0 ?
+          sexObj.push(temp);
+        }
+        if(sex.FEMALE) {
+          const temp = {
+            type: 'Female'
+          }
+        }
+        let diseases = [];
+        if(data.diseases) {
+          const diseaseArray = Object.entries(data.diseases).map(([key, value]) => {
+            return `${key} - ${value}`;
+          });
+          diseases = diseaseArray;
+        }
+
+        const filter: Filter = {
+          params: {
+            minAge: ageMin,
+            maxAge: ageMax,
+            sex: sexObj,
+            disease: diseases
+        }};
+
+        // default filter values
+        const filterApplied: FilterApplied = {
+          params: {
+            minAge: ageMin,
+            maxAge: ageMax,
+            sex: sexObj[0].type,
+            disease: diseases
+          }
+        };
+
+        setFilterSelected(filter);
+        setFilterApplied(filterApplied);
+        setLoadingInput(false);
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+const handleReset = () => {
+  setActiveStep(0);
+};
+
+return (
+  <Box sx={{ width: '100%' }}>
+    <div className="stepper-wrapper">
+    <Stepper activeStep={activeStep}>
+      {steps.map((label, index) => {
+        const stepProps: { completed?: boolean } = {};
+        const labelProps: {
+          optional?: React.ReactNode;
+        } = {};
+        if (isStepSkipped(index)) {
+          stepProps.completed = false;
+        }
+        return (
+          <Step key={label} {...stepProps}>
+            <StepLabel {...labelProps} className="flex">
+              { index === 0 &&
+              <AttachFileIcon/>
+              }
+              { index === 1 &&
+                <FilterAltIcon />
+              }
+              { index === 2 &&
+                <SyncAltIcon />
+              }
+              { index === 3 &&
+                <DownloadIcon />
+              }
+              {label}
+            </StepLabel>
+          </Step>
+        );
+      })}
+    </Stepper>
+    {activeStep === steps.length ? (
+      <React.Fragment>
+        <Typography sx={{ mt: 2, mb: 1 }}>
+          All steps completed - you&apos;re finished
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+          <Box sx={{ flex: '1 1 auto' }} />
+          <Button onClick={handleReset}>Reset</Button>
+        </Box>
+      </React.Fragment>
+    ) : (
+      <React.Fragment>
+        <Typography component="div" sx={{ mt: 2, mb: 1 }}>
+          {activeStep === 0 ? (
+            <>
               <FileChooser
                 onFileChange={handleFileChange}
-              /> : null}
-            {activeStep === 1 ?
-              <SelectionChooser
-                onFilterChange={handleFilterChange}
-                filter={filterSelected}
-              /> : null
-            }
-            {activeStep === 2 ?
+              />
+              {file ?
+                <div className="stepper-separator"></div>
+                : null
+              }
+              {file ?
               <ConverterChooser
                 onConverterChange={handleConverterChange}
                 converter={converterSelected}
-              /> : null}
-            {activeStep === 3 ? 
+                title="Choose a converter"
+                subtitle='Choose the converter you want to use'
+              /> : null }
+              </>
+            ) : null}
+            {activeStep === 1 ?
+              <SelectionChooser
+                onFilterChange={handleFilterChange}
+                filterData={filterSelected}
+                filterApplied={filterApplied}
+                loadingInput={loadingInput}
+              /> : null
+            }
+            {activeStep === 2 ? 
+            <div className="">
+              <ConverterChooser
+                onConverterChange={handleConverterOutputChange}
+                converter={converterOutput}
+                title="Choose a converter for OutputFile"
+                subtitle='Choose the converter you want to use'
+              /> 
+            </div> : null}
+            {activeStep === 3? 
             <div className="">
               <DownloadChooser 
                 converterSelected={converterSelected}
                 fileSelected={file}
-                filterSelected={filterSelected}
-                 />
+                filterSelected={filterApplied}
+                converterOutput={converterOutput}
+                />
             </div> : null}
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
-              disabled={activeNext}
+              disabled={activeStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
             >
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
+            { activeStep ===0 && !inputData  ? (
+              <Button onClick={handleLoadingInput}
+              disabled={!activeNext}>
+                {
+                  (activeStep === (steps.length - 1)) ? 'Finish' : 'Next'
+                }
+              </Button>
+            ) : (
             <Button onClick={handleNext}
-            disabled={!activeNext}>
-              {
-                (activeStep === (steps.length - 1)) ? 'Finish' : 'Next'
-              }
-            </Button>
+              disabled={!activeNext}>
+                {
+                  (activeStep === (steps.length - 1)) ? '' : 'Next'
+                }
+              </Button>
+            )}
           </Box>
         </React.Fragment>
       )}
+    </div>
     </Box>
   );
 }

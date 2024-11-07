@@ -19,51 +19,74 @@ interface DownloadChooserProps {
   converterSelected: Converter;
   fileSelected: File;
   filterSelected: Filter;
+  converterOutput: Converter;
 }
 
-export default function DownloadChooser({ converterSelected, fileSelected, filterSelected }: DownloadChooserProps) {
-  console.log(fileSelected);
+interface Converter {
+  type: string;
+}
+
+export default function DownloadChooser({ converterSelected, fileSelected, filterSelected, converterOutput }: DownloadChooserProps) {
+  console.log("file: " , fileSelected);
+  console.log("input converted: " , converterSelected);
+  console.log("filter: ", filterSelected);
+  console.log("output: " , converterOutput);
 
   return (
     <div className="download-chooser">
       <div className="stepper-title ">
-        Load your file
+        Download Resume
       </div>
       <div className="stepper-description">
-        Converting your model
+        There is a quick resume about your download parameters
       </div>
-      <div className="stepper-body">
-        <div className="stepper-body-description">
-          <div className="stepper-body-description-title flex">
-            <span className="stepper-body-description-title-label">File name:</span>
-            <div className="flex !justify-center !items-center bg-blue-500">
-              {fileSelected.name}
-            </div>
+      <div className="stepper-body-block">
+        <div className="download-chooser-item">
+          <div className="download-chooser-item-title">
+            Upload File Name:
           </div>
-          <div className="stepper-separator"></div>
-          <div className="stepper-body-description-title">
-            <span>Filter options selected:</span>
-            <div className="stepper-body-description-row">
-              <span className="stepper-body-description-title-label">Age:</span>
-              {filterSelected.params.minAge} - {filterSelected.params.maxAge}
-            </div>
-            { filterSelected.params.sex && filterSelected.params.sex !== '' &&
-              <div className="stepper-body-description-row">
-                <span className="stepper-body-description-title-label">Sex:</span>
-                {filterSelected.params.sex}
-              </div>
-            }
-            { filterSelected.params.disease && filterSelected.params.disease !== '' &&
-              <div className="stepper-body-description-row">
-                <span className="stepper-body-description-title-label">Disease:</span>
-                {filterSelected.params.disease}
-              </div>
-            }
+          <div className="download-chooser-item-value">
+            {fileSelected ? fileSelected.name : 'No file selected'}
           </div>
         </div>
-        <div className="stepper-body-info">
-
+        <div className="stepper-separator"></div>
+        <div className="download-chooser-item">
+          <div className="download-chooser-item-title">
+            Converter From:
+          </div>
+          <div className="download-chooser-item-value">
+            {converterSelected.type}
+          </div>
         </div>
+        <div className="stepper-separator"></div>
+        <div className="download-chooser-item">
+          <div className="download-chooser-item-title">
+            Converter To:
+          </div>
+          <div className="download-chooser-item-value">
+            {converterOutput.type}
+          </div>
+        </div>
+        <div className="stepper-separator"></div>
+        <div className="download-chooser-item">
+          <div className="download-chooser-item-title">
+            Applied Filters:
+          </div>
+          <div className="download-chooser-item-value">
+            Age ranges: {filterSelected.params.minAge} - {filterSelected.params.maxAge}
+          </div>
+          <hr />
+          <div className="download-chooser-item-value">
+            Sex: {filterSelected.params.sex }
+          </div>
+          <hr />
+          <div className="download-chooser-item-value">
+            Disease: {filterSelected.params.disease }
+          </div>
+        </div>
+      </div>
+      <div className="stepper-body-block-footer">
+        <button type="button" className="btn btn-primary">Download</button>
       </div>
     </div>
   );

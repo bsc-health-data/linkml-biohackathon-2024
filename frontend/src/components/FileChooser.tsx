@@ -2,7 +2,7 @@ import { useState } from 'react';
 import '../styles/styles.css';
 
 interface FileChooserProps {
-  onFileChange: (file: File) => void;
+  onFileChange: (file: File | null) => void;
 }
 
 export default function FileChooser({ onFileChange }: FileChooserProps) {
@@ -11,15 +11,16 @@ export default function FileChooser({ onFileChange }: FileChooserProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      console.llg(e.target.files[0]);
       setFile(e.target.files[0]);
       onFileChange(e.target.files[0]);    }
   };
 
   return(
     <div className="file-chooser">
-      <div className="stepper-title ">
-        Choose a file to upload
+      <div className="stepper-title">
+        <div className="stepper-title-content">
+          Choose an input file to upload
+        </div>
       </div>
       <div className="stepper-description">
         <div className="stepper-description-content">
@@ -34,7 +35,7 @@ export default function FileChooser({ onFileChange }: FileChooserProps) {
           <span className="filename">
             { file ? file.name : defaultFileName }
             </span>
-          <input type="file" className="inputfile form-control" name="file" />
+          <input type="file" className="inputfile form-control" name="file" onChange={handleFileChange} />
         </label>
       </div>
     </div>
