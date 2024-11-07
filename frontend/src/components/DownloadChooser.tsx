@@ -27,11 +27,6 @@ interface Converter {
 }
 
 export default function DownloadChooser({ converterSelected, fileSelected, filterSelected, converterOutput }: DownloadChooserProps) {
-  console.log("file: " , fileSelected);
-  console.log("input converted: " , converterSelected);
-  console.log("filter: ", filterSelected);
-  console.log("output: " , converterOutput);
-
   return (
     <div className="download-chooser">
       <div className="stepper-title ">

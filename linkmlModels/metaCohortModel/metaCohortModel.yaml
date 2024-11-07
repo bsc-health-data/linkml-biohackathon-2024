@@ -1,35 +1,99 @@
-id: cohort-model
-name: CohortModel
-description: A model representing a cohort of subjects with specific attributes.
-
+id: "http://example.org/CohortData"
+name: "CohortData"
+description: "A model to represent cohort data"
 prefixes:
-  cohort: http://example.org/cohort/
-  xsd: http://www.w3.org/2001/XMLSchema#
+  ex: "http://example.org/"
+  linkml: "https://w3id.org/linkml/"
+  PATO: http://purl.obolibrary.org/obo/PATO_
+default_prefix: "ex"
+default_range: string
+imports:
+  - linkml:types
 
 classes:
-  Cohort:
-    description: A group of subjects with common characteristics.
-    attributes:
-      name:
-        type: string
-        description: name of the cohort
-      data_dictionary:
-        type: DataDictionary
-        description: A collection of key attributes collected for the subjects in the cohort
 
-  DataDictionary:
-    description: A dictionary of data attributes for a cohort.
+# common model classes
+  CohortData:
+    tree_root: true
     attributes:
-      age:
-        type: integer
-        description: Age of the subjects in the cohort.
-      sex:
-        type: string
-        description: Sex of the subjects in the cohort.
-        enum:
-          - Male
-          - Female
-          - Other
-      disease:
-        type: string
-        description: Disease associated with the subjects in the cohort.
+      subjects:
+        description: "List of subjects in the cohort"
+        range: Subject
+        multivalued: true
+        inlined_as_list: true
+  Subject:
+    slots:
+      - subject_id
+      - sex
+      - age
+      - disease
+# end of common model classes
+
+# omop classes
+  OmopContainer:
+    attributes:
+      persons:
+        description: "List of person in the omop cohort"
+        range: Person
+        multivalued: true
+        inlined_as_list: true
+#      conditions:
+#        description: "List of person in the omop cohort"
+#        range: ConditionOccurence
+#        multivalued: true
+#        inlined_as_list: true
+  Person:
+    slots:
+      - person_id
+      - year_of_birth
+      - gender_concept_id
+  ConditionOccurrence:
+    slots:
+      - condition_occurrence_id
+      - condition_occurrence_value
+      - person_id
+# end of omop classes
+
+slots:
+#  common model slots
+  subject_id:
+    range: integer
+  sex:
+    description: "Sex of the subject"
+    range: SexEnum
+    required: true
+  age:
+    description: "Age of the subject in years"
+    range: "integer"
+  disease:
+    description: "Disease the subject is diagnosed with"
+    range: "string"
+#  end of common model slots
+
+#  omop model slots
+  person_id:
+    range: integer
+  year_of_birth:
+    range: integer
+  gender_concept_id:
+    range: integer
+
+  condition_occurrence_id:
+    range: string
+  condition_occurrence_value:
+    range: string
+#  end of omop model slots
+
+enums:
+#  common model enums
+  SexEnum:
+    permissible_values:
+      FEMALE:
+        meaning: PATO:0000383
+      MALE:
+        meaning: PATO:0000384
+      UNKNOWN:
+#  end of common model enums
+
+
+
