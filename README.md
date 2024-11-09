@@ -13,6 +13,10 @@ The key objectives of our project include:
  3. Developing semantic mappings between different data models while preserving data integrity and semantics (OMOP CDM, OpenEHR, Phenopackets, B1MG, BBMRI, etc).
     
  4. Ensuring scalability, performance of the DataModel Converter platform to handle large-scale datasets.
+
+## Results
+
+- https://github.com/christianfares/linkml-omop-biohack-2024
     
 
 By providing researchers and healthcare professionals with a flexible and efficient means to harmonize data across disparate data models, our project aims to accelerate biomedical research, enhance collaboration, and ultimately contribute to advancements in personalized medicine and patient care."
