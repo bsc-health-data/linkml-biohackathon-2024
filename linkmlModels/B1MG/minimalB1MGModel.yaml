@@ -1,0 +1,46 @@
+id: https://w3id.org/linkml/b1mg
+name: basicinfo
+prefixes:
+  linkml: https://w3id.org/linkml/
+  basicinfo: https://w3id.org/linkml/b1mg
+imports:
+  - linkml:types
+default_range: string
+default_prefix: basicinfo
+
+classes:
+
+  Patient:
+    attributes:
+      Birth_Year:
+        required: true
+        description:
+          Patient's year of birth as indicated on their birth certificate, in Partial Date (YYYY-MM), ISO 8601 format
+      Sex_at_Birth:
+        required: true
+        description:
+          Sex as assigned at birth
+        range: PersonSex
+  Disease:
+    attributes:
+      Definition:
+        required: true
+        description:
+          Used to specify the initial cancer diagnosis (neoplasm) and then follow the disease progression (primary cancer, loco-regional or metastatic relapse) with ICD-10 codes
+  Container:
+    tree_root: true
+    attributes:
+      patients:
+        inlined_as_list: true
+        range: Patient
+      diseases:
+        inlined_as_list: true
+        range: Disease
+
+enums:
+  PersonSex:
+    permissible_values:
+      Male:
+      Female:
+      Other:
+      Unknown:
