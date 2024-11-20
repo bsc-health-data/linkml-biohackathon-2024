@@ -30,15 +30,20 @@ git_url: https://github.com/bsc-health-data/linkml-biohackathon-2024/tree/main
 ---
 
 # Background
+
 In the era of precision medicine, interoperability of biomedical data is essential for facilitating collaborative research and enhancing data-driven healthcare. The concept of a Minimum Data Set (MDS) has emerged as a collection of standardized data elements that allow clinical data sharing and support research. Biomedical data is often voluminous, complex, and sometimes ambiguous, which complicates generating actionable health indicators.
 
-Our project addresses this challenge by developing a versatile web-based tool called **DataModel Converter**. This tool enables the conversion of cohort information to various biomedical MDS formats. Leveraging Flask or Streamlit, we offer an intuitive interface where users can select individuals from a cohort in a clinical database (e.g., OMOP CDM, OpenEHR) and effortlessly transform its structured data into multiple standard formats, such as B1MG Minimal Dataset for Cancer, BBMRI cohort definitions, OMOP cohorts, Phenopackets, and Beacon v2.
+One approach to address this need is through the development of schema-based frameworks, such as the Linked Data Modeling Language (LinkML). LinkML is a modelling language for defining data schemas that are machine-readable, easily validated, and interoperable, thus supporting consistency and harmonization across biomedical datasets.
+
+This project, as part of the ELIXIR Biohackathon 2024, aims to leverage LinkML to enhance data discoverability and interoperability within the ELIXIR community and beyond. Specifically, the team seeks to build on previous efforts in data harmonization by developing and testing LinkML schemas with common data models used dayly. Our approach focuses on schema integration, validation to LinkML and then mapping to the other LinkML schemas.
+
+The development of these schemas aligns with the goals of ELIXIR and similar life science infrastructures to promote data accessibility, reliability, and integration across borders and research domains. To do so, we have chosen the OMOP CDM, Phenopackets, FHIR and B1MG models as a first models to try our approacj. By implementing standardized schema models, we aim to create a robust framework for reusability of health information, ultimately supporting collaborative research and innovation in the life sciences.
 
 ## Project Objectives
 
 - **Design an interactive, user-friendly application** for cohort selection and data conversion.
 - **Implement backend functionalities** to retrieve and manipulate data from clinical databases.
-- **Develop semantic mappings** to preserve data integrity across models like OMOP CDM, OpenEHR, Phenopackets, B1MG, BBMRI, etc.
+- **Develop semantic mappings** to preserve data integrity across models like OMOP CDM, Phenopackets, B1MG and FHIR.
 - **Ensure scalability and performance** to handle large-scale datasets.
 
 ## Scope and Vision
@@ -51,15 +56,17 @@ This project advances biomedical informatics, accelerating biomedical research a
 
 ## Streamlined Data Transformation
 
-Typically, data conversion tools require users to manually map data properties and perform an Extract, Transform, Load (ETL) process to transition data between models. Our implementation streamlines this process by utilising pre-existing mappings, eliminating the need for users to map properties manually. Users simply select individuals based on cohort criteria (e.g., sex, age range, disease) from their clinical data repository.
-
-Using **OntoBridge** ([OntoBridge GitHub](https://github.com/InformaticaClinica/OntoBridge)), a semantic data mapping tool developed by our project leads, the selected data is converted to the desired data models. This enhances user efficiency and reduces the burden of data transformation, making the DataModel Converter a valuable resource for the biomedical informatics community. It fosters innovation, promotes the adoption of interoperable data standards, and supports advancements in translational research and clinical practice.
+Typically, data conversion tools require users to manually map data properties and perform an Extract, Transform, Load (ETL) process to transition data between models. Our implementation streamlines this process by utilising pre-existing mappings, eliminating the need for users to map properties manually. Users simply select individuals based on cohort criteria (in this case only sex, age range, disease for demonstration purposes) from their clinical data repository.
 
 # Data Models to LINKML
 
+Here we describe the models used in the BioHackaton project and its model in LinkML. The following tutorial was used as a guide: [LinkML Tutorial](https://linkml.io/linkml/intro/tutorial01.html). 
+
+After creating the minimal LinkML schema, both test data and test data with errors were generated. These files were validated against the schema to confirm if expected validation errors were triggered. 
+
 ## OMOP
 
-A minimal schema for OMOP was created using **LinkML**. The following tutorial was used as a guide: [LinkML Tutorial](https://linkml.io/linkml/intro/tutorial01.html).
+A minimal schema for OMOP was created using **LinkML**. 
 
 The following diagram models the OMOP data structure, with `Person` and `Condition_occurrence` classes to capture patient age, gender and disease condition. The `Container` class organises multiple `Person` instances.
 
@@ -135,7 +142,35 @@ This validation process helps maintain data integrity within the FHIR model and 
 
 ## B1MG
 
+The Beyond 1+ Million Genomes (B1MG) Minimal Dataset for Cancer [https://doi.org/10.1101/2023.10.07.561259] is the base model used for the GDI Cancer data. The model can be found [here](https://www.biorxiv.org/content/biorxiv/early/2023/10/10/2023.10.07.561259/DC1/embed/media-1.xlsx?download=true).
+
+The model has 140 variables, where many of them are mandatory. The LinkML model with the mandatory variables look like the following image.
+
+![](./images/B1MGExtendedModel.png)
+
+
+In order to avoid the cohort mapping to all the mandatory variables, only the desired three variables are mapped. In this case, the variables `Birt_Year`, `Sex_at_Birth` from the `Patient` section and `Definition` from the `Disease` section are defined.
+
+![](./images/B1MGModel.png)
+
+As it is done in the other models, the classes are mapped to a meta class `Container`.
+
+The minimal B1MG LinkML schema can be accessed [here](https://github.com/bsc-health-data/linkml-biohackathon-2024/blob/main/linkmlModels/B1MG/minimalB1MGModel.yaml).
+
+The B1MG LinkML schema with all the mandatory variables can be accessed [here](https://github.com/bsc-health-data/linkml-biohackathon-2024/blob/main/linkmlModels/B1MG/B1MGModel.yaml).
+
 ## Phenopackets
+
+[Phenopackets](https://www.ga4gh.org/product/phenopackets/) is a standard of the GA4GH for sharing disease and phenotype information.
+
+The LinkML model created in this project is based on the one found in [linkml-phenopackets repository](https://github.com/cmungall/linkml-phenopackets/). This model has the variables needed for our project, so in order to reduce overlap, we have use them:
+
+- `age`: Age property from the `timeAtLastEncounter` property from the `patent` section.
+- `sex`: Sex of the patient.
+- `diseases`: Property having the ontology and label of the disease.
+
+The full schema can be seen in the [pages of the repository](https://cmungall.github.io/linkml-phenopackets/).
+
 
 # General Cohort Model in LINKML
 
