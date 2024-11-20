@@ -62,31 +62,23 @@ Typically, data conversion tools require users to manually map data properties a
 
 Here we describe the models used in the BioHackaton project and its model in LinkML. The following tutorial was used as a guide: [LinkML Tutorial](https://linkml.io/linkml/intro/tutorial01.html). 
 
-After creating the minimal LinkML schema, both test data and test data with errors were generated. These files were validated against the schema to confirm if expected validation errors were triggered. 
+After creating the minimal LinkML schema, both test data and test data with errors were generated. These files were validated against the schema to confirm if expected validation errors were triggered. With this we can ensure that the schema can accurately validate test data and identify errors, maintaining data integrity within the OMOP model.
 
 ## OMOP
 
-A minimal schema for OMOP was created using **LinkML**. 
+[OMOP CDM](https://www.ohdsi.org/data-standardization/) is an open community standard designed to standardize the structure and content of observational data and to enable efficient analyses that can produce reliable evidence.
 
 The following diagram models the OMOP data structure, with `Person` and `Condition_occurrence` classes to capture patient age, gender and disease condition. The `Container` class organises multiple `Person` instances.
 
 ![](./images/omop_mvp_er_diagram.svg)
 
-**Minimal OMOP data model**
-
 The LinkML tree structure provided guidance on linking LinkML classes, following the standard outlined here: [OHDSI Data Standardization](https://www.ohdsi.org/data-standardization/).
-
-### Mapping Attributes for Age, Sex, and Disease
 
 To map attributes such as **Age**, **Sex**, and **Disease**, the **OMOP v5.4 data model** was used to identify the appropriate attributes and classes to incorporate into the LinkML schema. For details on OMOP v5.4, see the documentation here: [OMOP v5.4 Data Model](https://ohdsi.github.io/CommonDataModel/cdm54.html#person).
 
-The minimal LinkML schema can be found at the following path: `[INSERT RELATIVE PATH]`.
+The minimal LinkML schema can be found at the following [here](https://github.com/bsc-health-data/linkml-biohackathon-2024/blob/main/linkmlModels/OMOP/omop_linkml_mvp.yml), with the [data](https://github.com/bsc-health-data/linkml-biohackathon-2024/tree/main/linkmlModels/OMOP/test_data) needed to validate it.
 
-**Full OMOP data model**
-
-We generated a full LinkML schema from OMOP v5.4. `[INSERT RELATIVE PATH]`
-
-The full model was not used for the MVP app. 
+Also, we generated a full LinkML schema from OMOP v5.4. `[INSERT RELATIVE PATH]`.
 
 How: Create a db and add tables with the OMOP DDL, then use `schemauto import-sql` to generate the LinkML. To lint, the following block needed to be added to the top of the file:
 
@@ -97,29 +89,9 @@ imports:
   - linkml:types
 ```
 
-### Schema Validation
-
-After creating the minimal LinkML OMOP schema, both test data and test data with errors were generated in YAML and JSON formats. These files were validated against the schema to confirm if expected validation errors were triggered. The commands used for validation were:
-
-```bash
-linkml-validate -s ../models/omop/omop_linkml_mvp.yml ../models/omop/test_data/test_person.yml 
-
-linkml-validate -s ../models/omop/omop_linkml_mvp.yml ../models/omop/test_data/test_person.json
-
-linkml-validate -s ../models/omop/omop_linkml_mvp.yml ../models/omop/test_data/test_person_bad.yml
-
-linkml-validate -s ../models/omop/omop_linkml_mvp.yml ../models/omop/test_data/test_person_bad.json
-```
-
-This setup ensures that the schema can accurately validate test data and identify errors, maintaining data integrity within the OMOP model.
-
 ## FHIR 🔥 🔥 🔥 🔥 
 
-### Documentation for Minimal FHIR Schema using LinkML
-
-A minimal **FHIR** schema was created using **LinkML**, following a process similar to the one used for OMOP.
-
-### Identifying FHIR Resources for Age, Sex, and Disease
+FHIR is a standard for health care data exchange. It uses a modular, resource-based approach to represent clinical, administrative, and infrastructural data, enabling interoperability across diverse healthcare systems.
 
 To identify the relevant FHIR resources containing **Age**, **Sex**, and **Disease**, we referred to the FHIR resource list: [FHIR Resource List](https://www.hl7.org/fhir/resourcelist.html).
 
@@ -132,13 +104,7 @@ The above diagram is the minimal FHIR schema. Instances of the `Patient` and `Co
 
 Using this information, a minimal LinkML schema was created with **Patient** and **Observation** defined as classes.
 
-The FHIR LinkML schema can be accessed here: `[insert repo link]`.
-
-### Schema Validation
-
-The FHIR LinkML schema was then tested using YAML and JSON files with both valid test data and test data containing intentional errors. The FHIR LinkML test data can be accessed here: `[insert repo link]`. This testing ensured that the schema correctly validated data and identified errors.
-
-This validation process helps maintain data integrity within the FHIR model and supports reliable interoperability across biomedical data standards.
+The FHIR LinkML schema can be accessed [here](https://github.com/bsc-health-data/linkml-biohackathon-2024/blob/main/linkmlModels/FHIR/fhir_linkml_mvp.yml).
 
 ## B1MG
 
@@ -169,10 +135,14 @@ The LinkML model created in this project is based on the one found in [linkml-ph
 - `sex`: Sex of the patient.
 - `diseases`: Property having the ontology and label of the disease.
 
-The full schema can be seen in the [pages of the repository](https://cmungall.github.io/linkml-phenopackets/).
+The full schema can be seen in the [pages of the repository](https://cmungall.github.io/linkml-phenopackets/), with the test [data](https://github.com/bsc-health-data/linkml-biohackathon-2024/blob/main/extractCohort/data/extendedPhenopackets.json) to validate it.
 
 
 # General Cohort Model in LINKML
+
+To avoiding create a pairwise mapping between all the models a general cohort model has been created. This model, called **MetaCohort** has as a base the three variables that we are focusing our work in the project: **Age**, **Sex** and **Disease**.
+
+You can look the model [here](https://github.com/bsc-health-data/linkml-biohackathon-2024/blob/main/linkmlModels/metaCohortModel/metaCohortModel.yaml).
 
 # Mapping of models
 
