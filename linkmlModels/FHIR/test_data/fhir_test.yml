@@ -1,0 +1,43 @@
+patients:
+  - id: "patient-001"
+    gender: "male"
+    birthDate: "1985-02-20"
+  - id: "patient-002"
+    gender: "female"
+    birthDate: "1990-07-15"
+  - id: "patient-003"
+    gender: "other"
+    birthDate: "1975-12-01"
+  - id: "patient-004"
+    gender: "male"
+    birthDate: "2001-05-21"
+  - id: "patient-005"
+    gender: "unknown"
+    birthDate: "1995-09-30"
+
+conditions:
+  - id: "condition-001"
+    code: 
+      text: "Hypertension"
+    subject: "patient-001"
+    onsetDateTime: "2020-01-15"
+  - id: "condition-002"
+    code: 
+      text: "Diabetes"
+    subject: "patient-002"
+    onsetDateTime: "2018-03-22"
+  - id: "condition-003"
+    code: 
+      text: "Asthma"
+    subject: "patient-003"
+    onsetDateTime: "2015-06-01"
+  - id: "condition-004"
+    code: 
+      text: "Seasonal Allergies"
+    subject: "patient-004"
+    onsetDateTime: "2019-08-10"
+  - id: "condition-005"
+    code: 
+      text: "Migraines"
+    subject: "patient-005"
+    onsetDateTime: "2021-11-01"

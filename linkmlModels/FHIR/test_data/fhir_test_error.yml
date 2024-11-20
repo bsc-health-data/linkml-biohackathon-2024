@@ -1,0 +1,41 @@
+patients:
+  - id: 001 # should be string
+    gender: "alien" # should be one of enums
+    birthDate: "1985-02-20"
+  - id: "patient-002"
+    gender: "female"
+    birthDate: "1990-07-15"
+  - # missing id
+    gender: "other"
+    birthDate: "this is not a date"
+  - id: "patient-004"
+    gender: "male"
+    birthDate: "21/05/1990" # incorrect date format
+  - id: "patient-005"
+    gender: "unknown"
+    birthDate: "1995-09-30"
+
+conditions:
+  - id: "condition-001"
+    code: 
+      text: "Hypertension"
+    subject: "patient-001"
+    onsetDateTime: "2020-13-11" #not iso datetime
+  - id: "condition-002"
+    code: 
+      text: "Diabetes"
+    subject: "patient-002"
+    onsetDateTime: "2018-03-22T10:30:00Z"
+  - id: "condition-003"
+    code: 
+      text: "Asthma"
+    subject: "patient-003"
+    onsetDateTime: "2015-06-01T09:15:00Z"
+  - id: "condition-004"
+    code: "Seasonal Allergies" # CodeableConcept needs 'text' field
+    subject: "patient-004"
+    onsetDateTime: "2019-08-10T07:45:00Z"
+  - id: "condition-005"
+    code: "Migraines" # CodeableConcept needs 'text' field
+    subject: "patient-005"
+    onsetDateTime: "2021-11-01T14:00:00Z"

@@ -1,0 +1,94 @@
+PROFILER:  CsvDataGeneralizer(identifier_slots=[], depluralize_class_names=False, inflect_engine=<inflect.engine object at 0x1025acf70>, column_separator='\t', schema_name='example', robot=False, data_dictionary_row_count=0, enum_columns=[], enum_mask_columns=[], enum_threshold=0.1, enum_strlen_threshold=30, max_enum_size=50, downcase_header=False, snakecase_header=False, infer_foreign_keys=False, max_pk_len=60, min_distinct_fk_val=8, source_schema=None)
+classes:
+  Person:
+    slots:
+    - race_concept_id
+    - ethnicity_concept_id
+    - location_id
+    - provider_id
+    - care_site_id
+    - person_source_value
+    - gender_source_value
+    - gender_source_concept_id
+    - race_source_value
+    - race_source_concept_id
+    - ethnicity_source_value
+    - ethnicity_source_concept_id
+    - person_id
+    - gender_concept_id
+    - year_of_birth
+    - month_of_birth
+    - day_of_birth
+    - birth_datetime
+default_prefix: Person
+description: Person
+id: https://w3id.org/Person
+imports:
+- linkml:types
+- concept
+name: Person
+prefixes:
+  Person: https://w3id.org/Person
+  linkml: https://w3id.org/linkml/
+slots:
+  birth_datetime:
+    range: string
+  care_site_id:
+    range: string
+  day_of_birth:
+    examples:
+    - value: '1'
+    range: integer
+  ethnicity_concept_id:
+    examples:
+    - value: '38003564'
+    range: Concept
+  ethnicity_source_concept_id:
+    range: Concept
+  ethnicity_source_value:
+    examples:
+    - value: '1'
+    range: integer
+  gender_concept_id:
+    examples:
+    - value: '8532'
+    range: Concept
+  gender_source_concept_id:
+    range: Concept
+  gender_source_value:
+    examples:
+    - value: '2'
+    range: integer
+  location_id:
+    examples:
+    - value: '392'
+    range: integer
+  month_of_birth:
+    examples:
+    - value: '1'
+    range: integer
+  person_id:
+    examples:
+    - value: '903615'
+    identifier: true
+    range: integer
+  person_source_value:
+    examples:
+    - value: C4914E6F2447DF5D
+    range: string
+  provider_id:
+    range: string
+  race_concept_id:
+    examples:
+    - value: '8527'
+    range: Concept
+  race_source_concept_id:
+    range: Concept
+  race_source_value:
+    examples:
+    - value: '1'
+    range: integer
+  year_of_birth:
+    examples:
+    - value: '1939'
+    range: integer

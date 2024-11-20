@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 import yaml
 from linkml_map import ObjectTransformer
@@ -52,7 +53,7 @@ if __name__ == '__main__':
              'metaCohortModel.yaml',
              'CohortData',
              'transformer-common-omop-condition.yaml',
-             'output/cohort_data_omop_condition.yaml',
+             'cohort_data_omop_condition.yaml',
              'yaml')
 
 

@@ -1,0 +1,15 @@
+[{
+    "person_id": 1234,
+    "year_of_birth": 1990,
+    "gender_concept_id": 123
+  },
+  {
+    "person_id": 5678,
+    "year_of_birth": 1985,
+    "gender_concept_id": 456
+  },
+  {
+    "person_id": 9101,
+    "year_of_birth": 1975,
+    "gender_concept_id": 789
+  }]

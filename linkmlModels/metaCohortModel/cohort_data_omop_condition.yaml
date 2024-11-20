@@ -1,0 +1,7 @@
+conditions:
+- condition_occurrence_id: 70
+  condition_source_value: hypertension
+- condition_occurrence_id: 80
+  condition_source_value: diabetes
+- condition_occurrence_id: 58
+  condition_source_value: none

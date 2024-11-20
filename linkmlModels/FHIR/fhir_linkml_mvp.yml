@@ -1,0 +1,102 @@
+name: fhir_schema
+id: "https://example.org/fhir"
+description: "A LinkML representation of key FHIR resources."
+prefixes:
+  test_schema: "https://example.org/fhir#"
+default_prefix: test_schema
+default_range: string
+
+types:
+  Date:
+    description: "A date or partial date (year, year + month, or year + month + day) as defined in FHIR."
+    base: str
+    pattern: "^([0-9]{4})(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?$"
+    examples:
+      - value: "2024"
+      - value: "2024-11"
+      - value: "2024-11-06"
+
+classes:
+  Patient:
+    description: "FHIR resource for patient demographics and identifiers."
+    slots:
+      - id
+      - gender
+      - birthDate
+    slot_usage:
+      id:
+        identifier: true
+        required: true
+
+  Condition:
+    description: "A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern."
+    slots:
+      - id
+      - code
+      - subject
+      - onsetDateTime
+    slot_usage:
+      id:
+        identifier: true
+        required: true
+      subject:
+        range: Patient
+        required: true
+
+  Container:
+    tree_root: true
+    attributes:
+      patients:
+        multivalued: true
+        inlined_as_list: true
+        range: Patient  # List of Patient instances
+      conditions:
+        multivalued: true
+        inlined_as_list: true
+        range: Condition  # List of Condition instances
+
+  CodeableConcept:
+    description: "A concept that may be coded with one or more coding systems."
+    attributes:
+      text:
+        description: "Plain text representation of the concept."
+        range: string
+
+
+slots:
+  id:
+    description: "Unique Identifier for Resource"
+    range: string
+
+  gender:
+    description: "Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes."
+    range: Gender
+    examples:
+      - value: "male"
+      - value: "female"
+      - value: "other"
+      - value: "unknown"
+
+  birthDate:
+    description: "Date of birth of the patient"
+    range: Date  # Updated range to Date
+
+  code:
+    description: "Code identifying condition"
+    range: CodeableConcept
+
+  subject:
+    description: "Reference to the subject (patient) of the observation"
+    range: Patient
+
+  onsetDateTime:
+    description: "Date and time when the condition started."
+    range: Date  # Updated range to Date
+
+enums:
+  Gender:
+    permissible_values:
+      male: {}
+      female: {}
+      other: {}
+      unknown: {}
